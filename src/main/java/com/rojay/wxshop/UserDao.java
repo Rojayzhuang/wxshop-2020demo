@@ -1,6 +1,7 @@
 package com.rojay.wxshop;
 
 import com.rojay.wxshop.generate.User;
+import com.rojay.wxshop.generate.UserExample;
 import com.rojay.wxshop.generate.UserMapper;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -26,6 +27,15 @@ public class UserDao {
         try(SqlSession sqlSession = sqlSessionFactory.openSession(true)) {
             UserMapper mapper =  sqlSession.getMapper(UserMapper.class);
             mapper.insert(user);
+        }
+    }
+
+    public User getUserByTel(String tel) {
+        try(SqlSession sqlSession = sqlSessionFactory.openSession(true)) {
+            UserMapper mapper =  sqlSession.getMapper(UserMapper.class);
+            UserExample example = new UserExample();
+            example.createCriteria().andTelEqualTo(tel);
+            return mapper.selectByExample(example).get(0);
         }
     }
 }

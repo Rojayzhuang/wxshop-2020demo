@@ -14,22 +14,22 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService {
     private final UserService userService;
-    private final VerficationCodeCheckService verficationCodeCheckService;
+    private final VerificationCodeCheckService verificationCodeCheckService;
     //调用发验证码的接口
     private final SmsCodeService smsCodeService;
 
     @Autowired
     public AuthService(UserService userService,
-                       VerficationCodeCheckService verficationCodeCheckService,
+                       VerificationCodeCheckService verificationCodeCheckService,
                        SmsCodeService smsCodeService) {
         this.userService = userService;
-        this.verficationCodeCheckService = verficationCodeCheckService;
+        this.verificationCodeCheckService = verificationCodeCheckService;
         this.smsCodeService = smsCodeService;
     }
 
     public void sendVerificationCode(String tel) {
         userService.createUserIfNotExist(tel);
         String correctCode = smsCodeService.sendSmsCode(tel);
-        verficationCodeCheckService.addCode(tel, correctCode);
+        verificationCodeCheckService.addCode(tel, correctCode);
     }
 }

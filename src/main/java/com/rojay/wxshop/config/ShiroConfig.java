@@ -1,20 +1,21 @@
 package com.rojay.wxshop.config;
 
+import com.rojay.wxshop.service.ShiroRealm;
+import com.rojay.wxshop.service.VerificationCodeCheckService;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.cache.MemoryConstrainedCacheManager;
+import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.AuthorizingRealm;
+import org.apache.shiro.realm.Realm;
 import org.apache.shiro.session.mgt.DefaultSessionManager;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
-import org.apache.shiro.web.mgt.WebSecurityManager;
-import org.apache.shiro.web.servlet.ShiroFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.apache.shiro.mgt.SecurityManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,12 +47,11 @@ public class ShiroConfig {
      * @return
      */
     @Bean
-    public SecurityManager securityManager() {
+    public SecurityManager securityManager(ShiroRealm shiroRealm) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
 
         //限制安全行为在某个确定的域中进行
-        //securityManager.setRealm();
-
+        securityManager.setRealm(shiroRealm);
         //缓存管理器，判断是否为同一用户，后期可以换成分布式的
         securityManager.setCacheManager(new MemoryConstrainedCacheManager());
         //默认情况下在cookie中进行session的设置
@@ -59,16 +59,9 @@ public class ShiroConfig {
         return securityManager;
     }
 
-    public static class ShiroRealm extends AuthorizingRealm {
-
-        @Override
-        protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-            return null;
-        }
-
-        @Override
-        protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-            return null;
-        }
+    @Bean
+    public ShiroRealm myShirRealm(VerificationCodeCheckService verificationCodeCheckService) {
+        return new ShiroRealm(verificationCodeCheckService);
     }
+
 }

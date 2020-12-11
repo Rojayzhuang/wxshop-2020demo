@@ -12,10 +12,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * @createTime 2020年12月01日  16:44:28
  */
 @Service
-public class VerficationCodeCheckService {
+public class VerificationCodeCheckService {
     private Map<String , String > telNumberToCorrectCode = new ConcurrentHashMap<>();
 
     public void addCode(String tel, String correctCode) {
         telNumberToCorrectCode.put(tel, correctCode);
+    }
+
+    public String getCorrectCode(String tel) {
+        return telNumberToCorrectCode.get(tel);
     }
 }
